@@ -1,5 +1,6 @@
 package ru.example.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,6 @@ import java.util.List;
 public class User {
 
     @Id
-    // @Column(name = "id")
     @GeneratedValue(generator = "sequence-generator")
     @GenericGenerator(
             name = "sequence-generator",
@@ -37,6 +37,8 @@ public class User {
 
     // @Transient // указывает, что свойство не нужно записывать
 
+    // Для того, чтобы избежать зацикливания при выводе
+    @JsonIgnoreProperties(value = "masterUser", allowSetters = true)
     @OneToMany (mappedBy="masterUser", fetch = FetchType.EAGER)
     private List<Task> task_list;
 

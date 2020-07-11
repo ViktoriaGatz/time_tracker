@@ -1,5 +1,6 @@
 package ru.example.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,9 @@ public class Task {
     private User masterUser;
 
     @Id
+    @Column(name = "task_id")
+    private long task_id;
+
     @Column(name = "number")
     private long number;
 
