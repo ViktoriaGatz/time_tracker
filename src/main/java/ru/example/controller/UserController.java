@@ -20,6 +20,17 @@ public class UserController {
         this.userService = userService;
     }
 
+
+    @GetMapping("/add/id={id}/fio={fio}")
+    public ResponseEntity add(@PathVariable Long id, @PathVariable String fio) {
+        return ResponseEntity.ok(userService.save(new User(id, fio)));
+    }
+
+    @GetMapping("/edit/id={id}/new_fio={new_fio}")
+    public ResponseEntity edit(@PathVariable Long id, @PathVariable String new_fio) {
+        return ResponseEntity.ok(userService.save(new User(id, new_fio)));
+    }
+
     @PostMapping
     public ResponseEntity save(@RequestBody User user) {
         return ResponseEntity.ok(userService.save(user));

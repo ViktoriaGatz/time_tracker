@@ -1,6 +1,5 @@
 package ru.example.entity.task;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,13 +30,13 @@ public class Task {
     @Column(name = "task_id")
     private long task_id;
 
-    @Column(name = "number")
-    private long number;
-
     @Column(name = "title")
     private String title;
 
-    @Transient
+    @Column(name = "description")
+    private String description;
+
+
     private static final Logger log = Logger.getLogger(Task.class.getName());
 
     public Task(String title) {
@@ -65,4 +64,15 @@ public class Task {
         ollTime += time;
         log.info("Task " + getTitle() + " stop in " + dateStop.toString() + " time over = " + ollTime);
     }
+
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public Task(long task_id, String title) {
+        this.task_id = task_id;
+        this.title = title;
+    }
+
 }

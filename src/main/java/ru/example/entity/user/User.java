@@ -46,4 +46,8 @@ public class User {
         this.user_id = user_id;
         this.fio = fio;
     }
+
+    public void addTask(String title, String desc) {
+        task_list.add(new Task(title, desc));
+    }
 }
