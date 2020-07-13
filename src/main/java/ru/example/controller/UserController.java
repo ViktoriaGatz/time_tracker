@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.entity.user.User;
-import ru.example.service.UserService;
+import ru.example.service.UserServiceImpl;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -13,32 +13,32 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
 
-    @GetMapping("/add/id={id}/fio={fio}")
-    public ResponseEntity add(@PathVariable Long id, @PathVariable String fio) {
-        return ResponseEntity.ok(userService.save(new User(id, fio)));
+    @GetMapping("/add/fio={fio}")
+    public ResponseEntity add(@PathVariable String fio) {
+        return ResponseEntity.ok(userServiceImpl.save(new User(fio)));
     }
 
     @GetMapping("/edit/id={id}/new_fio={new_fio}")
     public ResponseEntity edit(@PathVariable Long id, @PathVariable String new_fio) {
-        return ResponseEntity.ok(userService.save(new User(id, new_fio)));
+        return ResponseEntity.ok(userServiceImpl.save(new User(id, new_fio)));
     }
 
     @PostMapping
     public ResponseEntity save(@RequestBody User user) {
-        return ResponseEntity.ok(userService.save(user));
+        return ResponseEntity.ok(userServiceImpl.save(user));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Long id) {
-        Optional<User> byId = userService.findById(id);
+        Optional<User> byId = userServiceImpl.findById(id);
         return Objects.isNull(byId)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(byId);
@@ -47,6 +47,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity findAll() {
-        return ResponseEntity.ok(userService.findAll());
+        return ResponseEntity.ok(userServiceImpl.findAll());
     }
 }

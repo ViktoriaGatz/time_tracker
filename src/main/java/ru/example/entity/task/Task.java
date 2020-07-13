@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import ru.example.entity.user.User;
 
 import javax.persistence.*;
@@ -21,9 +22,10 @@ import java.util.Date;
 @Entity
 @Table
 public class Task {
+    private static final Logger log = Logger.getLogger(Task.class.getName());
 
-    @ManyToOne (optional = false, cascade = CascadeType.ALL)
-    @JoinColumn (name="user_id")
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User masterUser;
 
     @Id
@@ -36,21 +38,32 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+//    @Column(name = "date_start")
+//    @Temporal(TemporalType.DATE)
+//    private Date date_start;
+//
+//    @Column(name = "date_finish")
+//    @Temporal(TemporalType.DATE)
+//    private Date date_start;
 
-    private static final Logger log = Logger.getLogger(Task.class.getName());
+    @Column(name = "date_add_task")
+    @Temporal(TemporalType.DATE)
+    private Date date_add_task;
 
-    public Task(String title) {
-        this.title = title;
-    }
     @Transient
     private Long ollTime = 0L;
 
     @Transient
     private Long time = 0L;
-    // @Temporal(TemporalType.DATE)
+
     public String taskTimeToString() {
         return new Date(time).toString();
     }
+
+    public Task(String title) {
+        this.title = title;
+    }
+
 
     public void startTime() {
         Date dateStart = new Date();
@@ -74,5 +87,12 @@ public class Task {
         this.task_id = task_id;
         this.title = title;
     }
+
+    public Task(User masterUser, String title, String description) {
+        this.masterUser = masterUser;
+        this.title = title;
+        this.description = description;
+    }
+
 
 }
