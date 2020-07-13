@@ -25,10 +25,11 @@ public class TaskController {
 
     @GetMapping("/add_task/user_id={user_id}/title={title}/desc={desc}")
     public ResponseEntity add_task(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
-        Optional<User> UserById = userServiceImpl.findById(user_id);
-        return Objects.isNull(UserById)
+        Optional<User> userById = userServiceImpl.findById(user_id);
+        return Objects.isNull(userById)
                 ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(taskServiceImpl.save(new Task(UserById.get(), title, desc)));
+                // : ResponseEntity.ok(user)
+                : ResponseEntity.ok(taskServiceImpl.save(new Task(userById.get(), title, desc)));
     }
 
     @GetMapping("/edit_title_by_id_task/id={id}/new_title={new_title}")
