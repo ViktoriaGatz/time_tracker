@@ -8,6 +8,7 @@ import ru.example.entity.user.User;
 import ru.example.service.TaskServiceImpl;
 import ru.example.service.UserServiceImpl;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,28 +20,24 @@ public class TaskController {
     private UserServiceImpl userServiceImpl;
 
     @Autowired
-    public TaskController(TaskServiceImpl taskServiceImpl) {
+    public TaskController(TaskServiceImpl taskServiceImpl, UserServiceImpl userServiceImpl) {
         this.taskServiceImpl = taskServiceImpl;
+        this.userServiceImpl = userServiceImpl;
     }
 
-    @GetMapping("/add_task/user_id={user_id}/title={title}/desc={desc}")
-    public ResponseEntity add_task(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
-        Optional<User> userById = userServiceImpl.findById(user_id);
-        return Objects.isNull(userById)
+
+    @GetMapping("/add_task/user_id={user_id}/fio={fio}/task_id={task_id}/title={title}/desc={desc}")
+    public ResponseEntity add_task(@PathVariable Long user_id, @PathVariable String fio, @PathVariable Long task_id, @PathVariable String title, @PathVariable String desc) {
+        return ResponseEntity.ok(taskServiceImpl.save(new Task(new User(user_id, fio), task_id, title, desc, new Date(), 0L, 0L)));
+    }
+
+    @GetMapping("/add_task_simple/user_id={user_id}/title={title}/desc={desc}")
+    public ResponseEntity add_task_simple(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
+        Optional<User> byId = userServiceImpl.findById(user_id);
+        return Objects.isNull(byId)
                 ? ResponseEntity.notFound().build()
-                // : ResponseEntity.ok(user)
-                : ResponseEntity.ok(taskServiceImpl.save(new Task(userById.get(), title, desc)));
+                : ResponseEntity.ok(taskServiceImpl.save(new Task(byId.get(), title, desc)));
     }
-
-    @GetMapping("/edit_title_by_id_task/id={id}/new_title={new_title}")
-    public ResponseEntity edit_title_by_id_task(@PathVariable Long id, @PathVariable String new_title) {
-        return ResponseEntity.ok(taskServiceImpl.save(new Task(id, new_title)));
-    }
-
-    // @GetMapping("/edit_desk_by_id_task/id={id}/new_desc={new_desc}")
-    // public ResponseEntity edit_desc_by_id_task(@PathVariable Long id, @PathVariable String new_desc) {
-    //     return ResponseEntity.ok(taskService.save(new Task(id, new_desc)));
-    // }
 
     @PostMapping
     public ResponseEntity save(@RequestBody Task task) {

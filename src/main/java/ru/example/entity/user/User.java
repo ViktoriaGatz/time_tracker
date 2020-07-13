@@ -51,6 +51,9 @@ public class User {
         this.fio = fio;
     }
 
+    public User(Long user_id) {
+        this.user_id = user_id;
+    }
     public void addTask(String title, String desc) {
         task_list.add(new Task(title, desc));
     }

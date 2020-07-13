@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import ru.example.entity.user.User;
 
@@ -29,7 +30,16 @@ public class Task {
     private User masterUser;
 
     @Id
-    @Column(name = "task_id")
+    @GeneratedValue(generator = "sequence-generator")
+    @GenericGenerator(
+            name = "sequence-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "task_id"), /* user_sequence*/
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"), /* Начинаем с "1" */
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1") /* Шаг = "1" */
+            }
+    )
     private long task_id;
 
     @Column(name = "title")
@@ -48,13 +58,14 @@ public class Task {
 
     @Column(name = "date_add_task")
     @Temporal(TemporalType.DATE)
-    private Date date_add_task;
+    private Date date_add_task = new Date();
 
     @Transient
     private Long ollTime = 0L;
 
     @Transient
     private Long time = 0L;
+
 
     public String taskTimeToString() {
         return new Date(time).toString();
