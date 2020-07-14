@@ -1,6 +1,7 @@
 package ru.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.entity.task.Task;
@@ -26,10 +27,10 @@ public class TaskController {
     }
 
 
-    @GetMapping("/add_task/user_id={user_id}/fio={fio}/task_id={task_id}/title={title}/desc={desc}")
-    public ResponseEntity add_task(@PathVariable Long user_id, @PathVariable String fio, @PathVariable Long task_id, @PathVariable String title, @PathVariable String desc) {
-        return ResponseEntity.ok(taskServiceImpl.save(new Task(new User(user_id, fio), task_id, title, desc, new Date(), 0L, 0L)));
-    }
+//    @GetMapping("/add_task/user_id={user_id}/fio={fio}/task_id={task_id}/title={title}/desc={desc}")
+//    public ResponseEntity add_task(@PathVariable Long user_id, @PathVariable String fio, @PathVariable Long task_id, @PathVariable String title, @PathVariable String desc) {
+//        return ResponseEntity.ok(taskServiceImpl.save(new Task(new User(user_id, fio), task_id, title, desc, new Date(), 0L, 0L)));
+//    }
 
     @GetMapping("/add_task_simple/user_id={user_id}/title={title}/desc={desc}")
     public ResponseEntity add_task_simple(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
@@ -56,5 +57,25 @@ public class TaskController {
     @GetMapping
     public ResponseEntity findAll() {
         return ResponseEntity.ok(taskServiceImpl.findAll());
+    }
+
+    @GetMapping("/start_task/task_id={task_id}")
+    public ResponseEntity start_task(@PathVariable Long task_id) {
+        Optional<Task> byId = taskServiceImpl.findById(task_id);
+        if (Objects.isNull(byId))
+            return ResponseEntity.notFound().build();
+        else {
+            return ResponseEntity.ok(taskServiceImpl.startTime(byId.get()));
+        }
+    }
+
+    @GetMapping("/stop_task/task_id={task_id}")
+    public ResponseEntity stop_task(@PathVariable Long task_id) {
+        Optional<Task> byId = taskServiceImpl.findById(task_id);
+        if (Objects.isNull(byId))
+            return ResponseEntity.notFound().build();
+        else {
+            return ResponseEntity.ok(taskServiceImpl.stopTime(byId.get()));
+        }
     }
 }

@@ -33,4 +33,14 @@ public class TaskServiceImpl implements TaskService{
     public List<Task> findAll() {
         return taskRepository.findAll();
     }
+
+    public Task startTime(Task task) {
+        task.startTime();
+        return taskRepository.save(task);
+    }
+
+    public Task stopTime(Task task) {
+        task.stopTime();
+        return taskRepository.save(task);
+    }
 }

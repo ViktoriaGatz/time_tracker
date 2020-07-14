@@ -37,9 +37,9 @@ public class UserController {
         return ResponseEntity.ok(userServiceImpl.save(user));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity findById(@PathVariable Long id) {
-        Optional<User> byId = userServiceImpl.findById(id);
+    @GetMapping("/{user_id}")
+    public ResponseEntity findById(@PathVariable Long user_id) {
+        Optional<User> byId = userServiceImpl.findById(user_id);
         return Objects.isNull(byId)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(byId);

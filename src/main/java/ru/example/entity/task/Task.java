@@ -1,5 +1,6 @@
 package ru.example.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import ru.example.entity.user.User;
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Класс для одной из задач
@@ -25,6 +27,7 @@ import java.util.Date;
 public class Task {
     private static final Logger log = Logger.getLogger(Task.class.getName());
 
+    @JsonIgnoreProperties(value = "task_list", allowSetters = true)
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User masterUser;
@@ -57,19 +60,21 @@ public class Task {
 //    private Date date_start;
 
     @Column(name = "date_add_task")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date_add_task = new Date();
 
-    @Transient
-    private Long ollTime = 0L;
+    @Column(name = "date_start_task")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date_start_task;
 
-    @Transient
-    private Long time = 0L;
+    @Column(name = "date_stop_task")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date_stop_task;
 
+    @Column(name = "time")
+    @Temporal(TemporalType.TIME)
+    private Date time;
 
-    public String taskTimeToString() {
-        return new Date(time).toString();
-    }
 
     public Task(String title) {
         this.title = title;
@@ -77,16 +82,15 @@ public class Task {
 
 
     public void startTime() {
-        Date dateStart = new Date();
-        time = dateStart.getTime();
-        log.info("Task " + getTitle() + " start in " + dateStart.toString());
+        date_start_task = new Date();
+        log.info("Task '" + getTitle() + "' start in " + date_start_task.toString());
     }
 
     public void stopTime() {
-        Date dateStop = new Date();
-        time = dateStop.getTime() - time;
-        ollTime += time;
-        log.info("Task " + getTitle() + " stop in " + dateStop.toString() + " time over = " + ollTime);
+        date_stop_task = new Date();
+        if (Objects.isNull(date_start_task)) return;
+        time = new Date(date_stop_task.getTime() - date_start_task.getTime());
+        log.info("Task '" + getTitle() + "' stop in " + date_stop_task.toString() + " time = " + time.toString());
     }
 
     public Task(String title, String description) {
