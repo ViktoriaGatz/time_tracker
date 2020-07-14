@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import ru.example.entity.user.User;
-
 import javax.persistence.*;
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -51,14 +48,6 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-//    @Column(name = "date_start")
-//    @Temporal(TemporalType.DATE)
-//    private Date date_start;
-//
-//    @Column(name = "date_finish")
-//    @Temporal(TemporalType.DATE)
-//    private Date date_start;
-
     @Column(name = "date_add_task")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_add_task = new Date();
@@ -75,22 +64,8 @@ public class Task {
     @Temporal(TemporalType.TIME)
     private Date time;
 
-
     public Task(String title) {
         this.title = title;
-    }
-
-
-    public void startTime() {
-        date_start_task = new Date();
-        log.info("Task '" + getTitle() + "' start in " + date_start_task.toString());
-    }
-
-    public void stopTime() {
-        date_stop_task = new Date();
-        if (Objects.isNull(date_start_task)) return;
-        time = new Date(date_stop_task.getTime() - date_start_task.getTime());
-        log.info("Task '" + getTitle() + "' stop in " + date_stop_task.toString() + " time = " + time.toString());
     }
 
     public Task(String title, String description) {
@@ -109,5 +84,16 @@ public class Task {
         this.description = description;
     }
 
+    public void startTime() {
+        date_start_task = new Date();
+        log.info("Task '" + getTitle() + "' start in " + date_start_task.toString());
+    }
+
+    public void stopTime() {
+        date_stop_task = new Date();
+        if (Objects.isNull(date_start_task)) return;
+        time = new Date(date_stop_task.getTime() - date_start_task.getTime());
+        log.info("Task '" + getTitle() + "' stop in " + date_stop_task.toString() + " time = " + time.toString());
+    }
 
 }
