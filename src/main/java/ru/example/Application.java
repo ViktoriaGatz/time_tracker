@@ -13,7 +13,7 @@ public class Application {
 	private static final Logger log = Logger.getLogger(Application.class.getName());
 
 	public static void main(String[] args) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(AppContext.class);
+//		ApplicationContext context = new AnnotationConfigApplicationContext(AppContext.class);
 
 		SpringApplication.run(Application.class, args);
 		log.info("Start application");

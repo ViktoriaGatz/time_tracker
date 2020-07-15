@@ -57,8 +57,8 @@ public class TaskServiceImpl implements TaskService {
         for (Task task : taskList) {
             Date tmpDate = new Date(new Date().getTime() - task.getDate_add_task().getTime());
             if (tmpDate.getTime() > new Date(30000).getTime()) {
-                log.info("Delete task + '" + task.getTitle() + "', date_add_task = " + task.getDate_add_task().toString());
-                taskRepository.delete(task);
+                log.info("Delete task + '" + task.getTask_id() + "', date_add_task = " + task.getDate_add_task().toString());
+                taskRepository.deleteById(task.getTask_id());
             }
         }
     }
