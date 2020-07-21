@@ -11,7 +11,6 @@ import ru.example.entity.task.Task;
 import javax.persistence.*;
 import java.util.List;
 
-// @Table (name = "UserTable")
 @Getter
 @Setter
 @NoArgsConstructor

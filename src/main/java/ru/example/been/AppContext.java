@@ -2,19 +2,13 @@ package ru.example.been;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import ru.example.entity.task.Task;
-import ru.example.entity.user.User;
-import ru.example.repository.TaskRepository;
-import ru.example.service.TaskService;
+
 import ru.example.service.TaskServiceImpl;
 
 import java.util.Date;
-import java.util.Objects;
 
 @EnableScheduling
 @Configuration
@@ -43,10 +37,10 @@ public class AppContext {
         "0 0 9-17 * * MON-FRI" = on the hour nine-to-five weekdays
         "0 0 0 25 12 ?" = every Christmas Day at midnight
      */
-    // @Scheduled(cron = "0 0 17 * * SUN")
     // @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
     // @Scheduled(fixedRate = 5000)
-    @Scheduled(fixedDelay = 60000L)
+    // @Scheduled(fixedDelay = 60000L)
+    @Scheduled(cron = "0 0 17 * * SUN")
     public void reportCurrentTime() {
         try {
             taskServiceImpl.delete_task_info_TIME_LIMIT();
