@@ -36,7 +36,7 @@ public class Controller {
         return ResponseEntity.ok(taskServiceImpl.save(task));
     }
 
-    @GetMapping("/{task_id}")
+    @GetMapping("/task_id={task_id}")
     public ResponseEntity findTaskById(@PathVariable Long id) {
         Optional<Task> byId = taskServiceImpl.findById(id);
         return Objects.isNull(byId)
@@ -84,7 +84,7 @@ public class Controller {
         return ResponseEntity.ok(userServiceImpl.save(user));
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/user_id={user_id}")
     public ResponseEntity findUserById(@PathVariable Long user_id) {
         Optional<User> byId = userServiceImpl.findById(user_id);
         return Objects.isNull(byId)
