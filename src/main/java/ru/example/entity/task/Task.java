@@ -43,10 +43,10 @@ public class Task {
     private long task_id;
 
     @Column(name = "title")
-    private String title;
+    private String title = "title";
 
     @Column(name = "description")
-    private String description;
+    private String description = "description";
 
     @Column(name = "date_add_task")
     @Temporal(TemporalType.TIMESTAMP)
@@ -94,6 +94,13 @@ public class Task {
         if (Objects.isNull(date_start_task)) return;
         time = new Date(date_stop_task.getTime() - date_start_task.getTime());
         log.info("Task '" + getTitle() + "' stop in " + date_stop_task.toString() + " time = " + time.toString());
+    }
+
+    @Override
+    public String toString() {
+        return Objects.isNull(masterUser)
+                ? "title = " + title + " desc = " + description
+                : "masterUser_id = " + masterUser.getUser_id() + "title = " + title + " desc = " + description;
     }
 
 }

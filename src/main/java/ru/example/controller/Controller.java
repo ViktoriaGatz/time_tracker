@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.entity.task.Task;
 import ru.example.entity.user.User;
+import ru.example.service.TaskService;
 import ru.example.service.TaskServiceImpl;
 import ru.example.service.UserServiceImpl;
 import java.util.Objects;
@@ -26,9 +27,10 @@ public class Controller {
     @GetMapping("/add_task_simple/user_id={user_id}/title={title}/desc={desc}")
     public ResponseEntity add_task_simple(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
         Optional<User> byId = userServiceImpl.findById(user_id);
-        return Objects.isNull(byId)
+        return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(taskServiceImpl.save(new Task(byId.get(), title, desc)));
+
     }
 
     @PostMapping("/saveTask")
@@ -39,9 +41,8 @@ public class Controller {
     @GetMapping("/task_id={task_id}")
     public ResponseEntity findTaskById(@PathVariable Long id) {
         Optional<Task> byId = taskServiceImpl.findById(id);
-        return Objects.isNull(byId)
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(byId);
+        return ResponseEntity.ok(Optional.ofNullable(byId));
+
     }
 
     @GetMapping("/show_task")
@@ -87,11 +88,9 @@ public class Controller {
     @GetMapping("/user_id={user_id}")
     public ResponseEntity findUserById(@PathVariable Long user_id) {
         Optional<User> byId = userServiceImpl.findById(user_id);
-        return Objects.isNull(byId)
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(byId);
-
+        return ResponseEntity.ok(Optional.ofNullable(byId));
     }
+
     @GetMapping("/show_user")
     public ResponseEntity findAllUser() {
         return ResponseEntity.ok(userServiceImpl.findAll());
@@ -110,5 +109,10 @@ public class Controller {
         }
     }
 
+//    @GetMapping("time_spent_on_work_for_user={user_id}")
+//    public ResponseEntity time_spent_on_work_for_user(@PathVariable Long user_id) {
+//
+//        return ResponseEntity.ok();
+//    }
 
 }

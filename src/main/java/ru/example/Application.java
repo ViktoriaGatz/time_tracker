@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-// import ru.example.been.AppContext;
+import ru.example.been.AppContext;
 
 @SpringBootApplication
 public class Application {
