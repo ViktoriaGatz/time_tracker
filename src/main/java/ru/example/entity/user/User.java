@@ -9,7 +9,7 @@ import org.hibernate.annotations.Parameter;
 import ru.example.entity.task.Task;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,7 +39,7 @@ public class User {
     // Для того, чтобы избежать зацикливания при выводе
     @JsonIgnoreProperties(value = "masterUser", allowSetters = true)
     @OneToMany (mappedBy="masterUser", fetch = FetchType.EAGER)
-    private List<Task> task_list;
+    private List<Task> task_list = new ArrayList<>();
 
     public User(Long user_id, String fio) {
         this.user_id = user_id;
@@ -53,7 +53,26 @@ public class User {
     public User(Long user_id) {
         this.user_id = user_id;
     }
+
     public void addTask(String title, String desc) {
         task_list.add(new Task(title, desc));
+    }
+
+    /*
+        Вывод списка задач (сортировка по времени добавления задачи в трекер)
+     */
+    public String retTimeSpentOnWork() {
+        /*
+            Сортировка по количеству времени, затраченного на задачу
+            Comparator<Task> comparator = Comparator.comparing(obj -> obj.getTime().getTime());
+        */
+        Comparator<Task> comparator = Comparator.comparing(obj -> obj.getDate_add_task().getTime());
+        Collections.sort(task_list, comparator);
+
+        return task_list.toString();
+    }
+
+    public void addTask(Task task) {
+        task_list.add(task);
     }
 }

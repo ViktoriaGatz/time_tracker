@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
 import ru.example.entity.user.User;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -84,6 +85,14 @@ public class Task {
         this.description = description;
     }
 
+    public Task(User user, long id, String title, String desc, Date time) {
+        this.masterUser = user;
+        this.task_id = id;
+        this.title = title;
+        this.description = desc;
+        this.time = time;
+    }
+
     public void startTime() {
         date_start_task = new Date();
         log.info("Task '" + getTitle() + "' start in " + date_start_task.toString());
@@ -102,5 +111,6 @@ public class Task {
                 ? "title = " + title + " desc = " + description
                 : "masterUser_id = " + masterUser.getUser_id() + "title = " + title + " desc = " + description;
     }
+
 
 }
