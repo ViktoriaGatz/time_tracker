@@ -10,17 +10,28 @@ import ru.example.service.TaskServiceImpl;
 
 import java.util.Date;
 
+/**
+ * Класс для задач по расписанию
+ * @author ViktoriaGatz
+ * @version 1.0
+ */
 @EnableScheduling
 @Configuration
 public class AppContext {
 
+    /** Поля для логирования */
     private static final Logger log = Logger.getLogger(AppContext.class.getName());
 
+    /** Поле для сервиса задач */
     private TaskServiceImpl taskServiceImpl;
 
+    /**
+     * Конструктор - создание нового объекта AppContext
+     * @param taskServiceImpl - сервис задач
+     */
     @Autowired
-    public AppContext(TaskServiceImpl taskServiceimpl) {
-        this.taskServiceImpl = taskServiceimpl;
+    public AppContext(TaskServiceImpl taskServiceImpl) {
+        this.taskServiceImpl = taskServiceImpl;
     }
 
     // private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -37,13 +48,18 @@ public class AppContext {
         "0 0 9-17 * * MON-FRI" = on the hour nine-to-five weekdays
         "0 0 0 25 12 ?" = every Christmas Day at midnight
      */
-    // @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
     // @Scheduled(fixedRate = 5000)
     // @Scheduled(fixedDelay = 60000L)
-    @Scheduled(cron = "0 0 17 * * SUN")
+    // @Scheduled(cron = "0 0 17 * * SUN")
+
+    /**
+     * Метод, выполняющийся каждые 30 секунд
+     * Нужен для удаления старой информации о задачах
+     */
+    @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
     public void reportCurrentTime() {
         try {
-            taskServiceImpl.delete_task_info_TIME_LIMIT();
+            taskServiceImpl.delete_task_info_TIME_LIMIT(30000L);
             log.info("Delete data. The time is now " + new Date());
         } catch (NullPointerException npe) {
             log.warn("Kek " + npe);
