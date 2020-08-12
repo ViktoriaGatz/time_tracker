@@ -9,6 +9,7 @@ import ru.example.entity.user.User;
 import ru.example.service.TaskServiceImpl;
 import ru.example.service.UserServiceImpl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,20 +163,28 @@ public class Controller {
     }
 
     // Не завершено
-    @GetMapping("/task_for_user={user_id}")
-    public String task_for_user(@PathVariable Long user_id, Model model) {
-        List<Task> tasks = taskServiceImpl.findAll();
-        model.addAttribute("task", tasks);
-        return "list_task";
+
+    /**
+     * Показать все трудозатраты пользователя за период N..M
+     * @param user_id - идентификатор искомого пользователя
+     * @param date1 - дата с которой начинается поиск
+     * @param date2 - дата по которуюю идёт поиск
+     * @return тело ответа - список задач (сортировка по времени поступления в треккер)
+     */
+    @GetMapping("/work_time_for_user/user_id={user_id}/from={date1}/to={date2}")
+    public ResponseEntity work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
     }
 
     // Не завершено
-    @GetMapping("/time_spent_on_work_for_user={user_id}")
-    public ResponseEntity time_spent_on_work_for_user(@PathVariable Long user_id) {
-        Optional<User> byId = userServiceImpl.findById(user_id);
-        return !byId.isPresent()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(byId.get().retTimeSpentOnWork());
+    /**
+     * Показать все трудозатраты пользователя за период N..M
+     * @param user_id - идентификатор искомого пользователя
+     * @param date1 - дата с которой начинается поиск
+     * @param date2 - дата по которуюю идёт поиск
+     * @return тело ответа - список задач (сортировка по времени поступления в треккер)
+     */
+    @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
+    public ResponseEntity no_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
     }
 
     /**
