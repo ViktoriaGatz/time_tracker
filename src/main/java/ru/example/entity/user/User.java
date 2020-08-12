@@ -11,6 +11,11 @@ import ru.example.entity.task.Task;
 import javax.persistence.*;
 import java.util.*;
 
+/**
+ * Класс для сущности Пользователь
+ * @author ViktoriaGatz
+ * @version 1.0
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,6 +23,7 @@ import java.util.*;
 @Table
 public class User {
 
+    /** Поле идентификатора пользователя */
     @Id
     @GeneratedValue(generator = "sequence-generator")
     @GenericGenerator(
@@ -31,35 +37,65 @@ public class User {
     )
     private Long user_id;
 
+    /** Фамилия пользователя */
     @Column(name = "fio")
     private String fio;
 
     // @Transient // указывает, что свойство не нужно записывать
 
-    // Для того, чтобы избежать зацикливания при выводе
+    /** Список задач пользователя */
+    // @JsonIgnoreProperties - для того, чтобы избежать зацикливания при выводе
     @JsonIgnoreProperties(value = "masterUser", allowSetters = true)
     @OneToMany (mappedBy="masterUser", fetch = FetchType.EAGER)
     private List<Task> task_list = new ArrayList<>();
 
+    /**
+     * Конструктор - создание нового объекта User
+     * @param user_id - идентификатор пользователя
+     * @param fio - фамилия пользователя
+     */
     public User(Long user_id, String fio) {
         this.user_id = user_id;
         this.fio = fio;
     }
 
+    /**
+     * Конструктор - создание нового объекта User
+     * @param fio - фамилия пользователя
+     */
     public User(String fio) {
         this.fio = fio;
     }
 
+    /**
+     * Конструктор - создание нового объекта User
+     * @param user_id - идентификатор пользователя
+     */
     public User(Long user_id) {
         this.user_id = user_id;
     }
 
+    /**
+     * Метод для добавления задачи пользователю
+     * @param title - заголовок новой задачи
+     * @param desc - описание новой задачи
+     */
     public void addTask(String title, String desc) {
         task_list.add(new Task(title, desc));
     }
 
-    /*
-        Вывод списка задач (сортировка по времени добавления задачи в трекер)
+
+    /**
+     * Метод для добавления задачи пользователю
+     * @param task - добавляемая задачи
+     */
+    public void addTask(Task task) {
+        task_list.add(task);
+    }
+
+    /**
+     * Метод для вывод списка задач (сортировка по времени добавления задачи в трекер)
+     * @return - список найденных задач
      */
     public String retTimeSpentOnWork() {
         /*
@@ -72,7 +108,4 @@ public class User {
         return task_list.toString();
     }
 
-    public void addTask(Task task) {
-        task_list.add(task);
-    }
 }

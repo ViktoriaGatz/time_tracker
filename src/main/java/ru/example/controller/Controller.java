@@ -163,7 +163,6 @@ public class Controller {
     }
 
     // Не завершено
-
     /**
      * Показать все трудозатраты пользователя за период N..M
      * @param user_id - идентификатор искомого пользователя
@@ -173,9 +172,9 @@ public class Controller {
      */
     @GetMapping("/work_time_for_user/user_id={user_id}/from={date1}/to={date2}")
     public ResponseEntity work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+        return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
     }
 
-    // Не завершено
     /**
      * Показать все трудозатраты пользователя за период N..M
      * @param user_id - идентификатор искомого пользователя
@@ -184,7 +183,8 @@ public class Controller {
      * @return тело ответа - список задач (сортировка по времени поступления в треккер)
      */
     @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
-    public ResponseEntity no_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+    public ResponseEntity not_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+        return ResponseEntity.ok(userServiceImpl.view_not_work_time_for_user(user_id, date1, date2));
     }
 
     /**

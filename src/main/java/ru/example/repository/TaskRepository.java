@@ -3,12 +3,12 @@ package ru.example.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.example.entity.task.Task;
-import ru.example.entity.user.User;
 
-import java.util.List;
-import java.util.Optional;
-
+/**
+ * Класс-репозиторий для сущности Task (задачи)
+ * @author ViktoriaGatz
+ * @version 1.0
+ */
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-
 }
