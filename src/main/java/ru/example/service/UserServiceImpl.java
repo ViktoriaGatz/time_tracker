@@ -2,14 +2,13 @@ package ru.example.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.example.entity.WorkTime;
 import ru.example.entity.task.Task;
 import ru.example.entity.user.User;
 import ru.example.repository.UserRepository;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Класс-сервис для репозитория пользователей
@@ -74,6 +73,34 @@ public class UserServiceImpl{
         if (byId.isPresent()) byId.get().setTask_list(null);
     }
 
+//        boolean after(Date date) - если объект содержит более позднюю дату, чем указано в параметре date, то возвращается true;
+//        boolean before(Date date) - если объект содержит более раннюю дату, чем указано в параметре date, то возвращается true;
+//        int compareTo(Date date) - сравнивает даты. Возвращает 0, если совпадают, отрицательное значение - если вызывающая дата более ранняя, положительное значение - если вызывающая дата более поздняя, чем в параметре;
+//        boolean equals(Object object) - если даты совпадают, то возвращается true;
+//        long getTime() - возвращает количество миллисекунд, прошедших с полуночи 1 января 1970 года;
+//        void setTime(long milliseconds) - устанавливает время и дату в виде числа миллисекунд, прошедших с полночи 1 января 1970 года.
+    /**
+     * Метод для вывода информации о трудозатратах пользователя за период N..M
+     * @param id - идентификатор пользователя
+     * @param date1 - дата, с которой начинается поиск
+     * @param date2 - дата, по которую идёт поиск
+     * @return - список найденных простоев
+     */
+    public LinkedList<WorkTime> view_work_time_for_user(Long id, Date date1, Date date2) {
+        LinkedList<WorkTime> responseList = new LinkedList<>();
+
+        Optional<User> byId = userRepository.findById(id);
+        if (!byId.isPresent()) return new LinkedList<>();
+
+        List<Task> taskList = byId.get().getTask_list();
+        for (Task task : taskList) {
+            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
+                responseList.add(new WorkTime(task.getTitle(), task.getTime()));
+            }
+        }
+        return responseList;
+    }
+
     /**
      * Метод для вывода информации о задачах пользователя за период N..M
      * @param id - идентификатор пользователя
@@ -81,25 +108,17 @@ public class UserServiceImpl{
      * @param date2 - дата, по которую идёт поиск
      * @return - список найденных задач
      */
-    public List<Task> view_work_time_for_user(Long id, Date date1, Date date2) {
-//        boolean after(Date date) - если объект содержит более позднюю дату, чем указано в параметре date, то возвращается true;
-//        boolean before(Date date) - если объект содержит более раннюю дату, чем указано в параметре date, то возвращается true;
-//        int compareTo(Date date) - сравнивает даты. Возвращает 0, если совпадают, отрицательное значение - если вызывающая дата более ранняя, положительное значение - если вызывающая дата более поздняя, чем в параметре;
-//        boolean equals(Object object) - если даты совпадают, то возвращается true;
-//        long getTime() - возвращает количество миллисекунд, прошедших с полуночи 1 января 1970 года;
-//        void setTime(long milliseconds) - устанавливает время и дату в виде числа миллисекунд, прошедших с полночи 1 января 1970 года.
+    public List<Task> time_for_user(Long id, Date date1, Date date2) {
+        Optional<User> byId = userRepository.findById(id);
+        if (!byId.isPresent()) return new ArrayList<>();
 
+        List<Task> taskList = byId.get().getTask_list();
+        List<Task> responseList = new ArrayList<>();
+        for (Task task : taskList) {
+            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
+                responseList.add(task);
+            }
+        }
+        return responseList;
     }
-
-    /**
-     * Метод для вывода информации о простоях пользователя за период N..M
-     * @param id - идентификатор пользователя
-     * @param date1 - дата, с которой начинается поиск
-     * @param date2 - дата, по которую идёт поиск
-     * @return - список найденных простоев
-     */
-    public List<Task> view_not_work_time_for_user(Long id, Date date1, Date date2) {
-
-    }
-
 }

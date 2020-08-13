@@ -9,6 +9,7 @@ import ru.example.entity.user.User;
 import ru.example.service.TaskServiceImpl;
 import ru.example.service.UserServiceImpl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -162,9 +163,9 @@ public class Controller {
         return ResponseEntity.ok(userServiceImpl.findAll());
     }
 
-    // Не завершено
     /**
      * Показать все трудозатраты пользователя за период N..M
+     * Для ответа на вопрос, на какие задачи я потратил больше времени
      * @param user_id - идентификатор искомого пользователя
      * @param date1 - дата с которой начинается поиск
      * @param date2 - дата по которуюю идёт поиск
@@ -172,6 +173,23 @@ public class Controller {
      */
     @GetMapping("/work_time_for_user/user_id={user_id}/from={date1}/to={date2}")
     public ResponseEntity work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+        dateFormat.format(new Date());
+        return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
+    }
+
+    /**
+     * Показать все трудозатраты пользователя за период N..M
+     * Для ответа на вопрос, где за прошедшую неделю были 'дыры', когда я ничего не делал
+     * @param user_id - идентификатор искомого пользователя
+     * @param date1 - дата с которой начинается поиск
+     * @param date2 - дата по которуюю идёт поиск
+     * @return тело ответа - список задач (сортировка по времени поступления в треккер)
+     */
+    @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
+    public ResponseEntity not_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd hh:mm");
+        dateFormat.format(new Date());
         return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
     }
 
@@ -183,8 +201,8 @@ public class Controller {
      * @return тело ответа - список задач (сортировка по времени поступления в треккер)
      */
     @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
-    public ResponseEntity not_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
-        return ResponseEntity.ok(userServiceImpl.view_not_work_time_for_user(user_id, date1, date2));
+    public ResponseEntity time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+        return ResponseEntity.ok(userServiceImpl.time_for_user(user_id, date1, date2));
     }
 
     /**

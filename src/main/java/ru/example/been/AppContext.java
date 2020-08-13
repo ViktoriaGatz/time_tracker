@@ -56,15 +56,15 @@ public class AppContext {
      * Метод, выполняющийся каждые 30 секунд
      * Нужен для удаления старой информации о задачах
      */
-    @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
-    public void reportCurrentTime() {
-        try {
-            taskServiceImpl.delete_task_info_TIME_LIMIT(30000L);
-            log.info("Delete data. The time is now " + new Date());
-        } catch (NullPointerException npe) {
-            log.warn("Kek " + npe);
-        }
-    }
+//    @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
+//    public void reportCurrentTime() {
+//        try {
+//            taskServiceImpl.delete_task_info_TIME_LIMIT(30000L);
+//            log.info("Delete data. The time is now " + new Date());
+//        } catch (NullPointerException npe) {
+//            log.warn("Kek " + npe);
+//        }
+//    }
     /*
         @Bean
         @Lazy
