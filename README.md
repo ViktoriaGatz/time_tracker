@@ -5,6 +5,17 @@
 ## Основные запросы
 
 1. Создать пользователя трекинга
+    * 
+1. Добавить задачу пользователю
+     
+     Get метод для создания новой задачи для пользователя
+     
+     @param user_id - идентификатор пользователя, для которого создаётся задача
+     @param title   - заголовок для задачи
+     @param desc    - описание задачи
+     @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON), либо Страница 404
+     
+     $curl "localhost:8080/add_task_simple/user_id={user_id}/title={title}/desc={desc}
 2. изменить данные пользователя
 3. начать отсчет времени по задаче Х
 4. прекратить отсчет времени по задаче Х
@@ -14,7 +25,7 @@
 8. удалить всю информацию о пользователе Z
 9. очистить данные трекинга пользователя Z
 
-## Используемые версии
+## Используемые версии (перед запуском)
 
 * Ubuntu 18.04.4 LTS
 * openjdk версии "1.8.0_162"
@@ -22,3 +33,49 @@
 * 64-разрядная серверная виртуальная машина OpenJDK (сборка 25.162-b12, смешанный режим)
 * mySQL 5.7
 
+## Процедура сборки и запуска
+
+После установки всех необходимых приложений, необходимо:
+1. Зайти в консоль mySQL из под root
+
+    $ sudo mysql -u root
+2. Создать пользователя БД
+
+    $ CREATE USER 'user_name'@'localhost' IDENTIFIED BY 'password';
+3. Чтобы назначить созданном пользователю неограниченные права доступа к базе данных, выполните следующую команду
+
+    $ GRANT ALL PRIVILEGES ON * . * TO 'user_name'@'localhost';
+4. Проверьте результат ещё раз войдя в mysql-консоль
+
+    $ mysql -u user_name -p
+5. Создайте новую БД
+
+    $ CREATE DATABASES 'time_tracker'
+    
+**(не следует созадавать новую БД под root, т.к. в последних версиях mySQL для root пользователя используется не пароль а auth_socket)**  
+
+Если вы всё делали по плану, то файл src/main/resources/application.yml нужно будет привести к следующему виду:
+
+````
+server:
+  port: 8080
+spring:
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
+    cache: false
+  jpa:
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:mysql://localhost:3306/time_tracker
+    username: user_name
+    password: password
+    
+````
+
+7. Проект собирается с помощью gradle командной
+
+    $ gradle build -x test
+8. Запуск проекта
+
+    $ gradle bootRun
