@@ -5,17 +5,39 @@
 ## Основные запросы
 
 1. Создать пользователя трекинга
-    * 
-1. Добавить задачу пользователю
+
+    Post метод для сохранения нового пользователя треккинга
+    
+    @param user - кандидат на сохранение (новый пользователь)
+    @return тело ответа - сохранённый пользователь (MediaType.APPLICATION_JSON)
+    
+    ````$ curl -H 'Content-Type:application/json' -d '{"user_id":4,"fio":"fio","task_list":[]}' 'localhost:8080/saveUser'````
+    
+    Get метод для добавления пользователя треккера
+
+    @param fio - ФИО пользователя
+    @return тело ответа - добавленный пользователь (MediaType.APPLICATION_JSON)
+
+    ````$ curl 'localhost:8080/add/fio=fio'````
+
+
+2. Добавить задачу пользователю
      
-     Get метод для создания новой задачи для пользователя
+    Get метод для создания новой задачи для пользователя
      
-     @param user_id - идентификатор пользователя, для которого создаётся задача
-     @param title   - заголовок для задачи
-     @param desc    - описание задачи
-     @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON), либо Страница 404
+    @param user_id - идентификатор пользователя, для которого создаётся задача
+    @param title   - заголовок для задачи
+    @param desc    - описание задачи
+    @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON), либо Страница 404
      
-     $curl "localhost:8080/add_task_simple/user_id={user_id}/title={title}/desc={desc}
+    ````$ curl 'localhost:8080/add_task_simple/user_id=1/title=title/desc=desc'````
+     
+    Post метод для сохранения новой задачи
+
+    @param task - кандидат на сохранение (новая задача)
+    @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON)
+    
+    ````$ curl -H 'Content-Type:application/json' -d '{"task_id":1,"date_add_task":null,"date_start_task":null,"date_stop_task":null,"description":"description","time":null,"title":"title"}' 'localhost:8080/saveTask'````
 2. изменить данные пользователя
 3. начать отсчет времени по задаче Х
 4. прекратить отсчет времени по задаче Х
