@@ -40,6 +40,20 @@ public class UserServiceImpl{
     }
 
     /**
+     * Метод для обновлении информации о пользователе
+     * @param user_id - идентификатор пользователя
+     * @param newFio - новые ФИО пользователя
+     * @return - сохранённый пользователь
+     */
+    public User update(Long user_id, String newFio) {
+        Optional<User> user = userRepository.findById(user_id);
+        return !user.isPresent()
+                ? userRepository.save(new User(user_id, "fio"))
+                : userRepository.save(user.get());
+    }
+
+
+    /**
      * Поиск пользователя по идентификатору
      * @param id - идентификатор пользователя
      * @return - найденный пользователь
@@ -87,18 +101,11 @@ public class UserServiceImpl{
      * @return - список найденных простоев
      */
     public LinkedList<WorkTime> view_work_time_for_user(Long id, Date date1, Date date2) {
-        LinkedList<WorkTime> responseList = new LinkedList<>();
-
         Optional<User> byId = userRepository.findById(id);
-        if (!byId.isPresent()) return new LinkedList<>();
 
-        List<Task> taskList = byId.get().getTask_list();
-        for (Task task : taskList) {
-            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
-                responseList.add(new WorkTime(task.getTitle(), task.getTime()));
-            }
-        }
-        return responseList;
+        return !byId.isPresent()
+                ? new LinkedList<>()
+                : byId.get().view_work_time_for_user(id, date1, date2);
     }
 
     /**
@@ -110,15 +117,9 @@ public class UserServiceImpl{
      */
     public List<Task> time_for_user(Long id, Date date1, Date date2) {
         Optional<User> byId = userRepository.findById(id);
-        if (!byId.isPresent()) return new ArrayList<>();
 
-        List<Task> taskList = byId.get().getTask_list();
-        List<Task> responseList = new ArrayList<>();
-        for (Task task : taskList) {
-            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
-                responseList.add(task);
-            }
-        }
-        return responseList;
+        return !byId.isPresent()
+            ? new ArrayList<>()
+            : byId.get().time_for_user(id, date1, date2);
     }
 }

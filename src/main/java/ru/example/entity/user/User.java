@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import ru.example.entity.WorkTime;
 import ru.example.entity.task.Task;
 
 import javax.persistence.*;
@@ -106,6 +107,41 @@ public class User {
         Collections.sort(task_list, comparator);
 
         return task_list.toString();
+    }
+
+    /**
+     * Метод для вывода информации о задачах пользователя за период N..M
+     * @param id - идентификатор пользователя
+     * @param date1 - дата, с которой начинается поиск
+     * @param date2 - дата, по которую идёт поиск
+     * @return - список найденных задач
+     */
+    public List<Task> time_for_user(Long id, Date date1, Date date2) {
+        List<Task> responseList = new ArrayList<>();
+        for (Task task : task_list) {
+            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
+                responseList.add(task);
+            }
+        }
+        return responseList;
+    }
+
+    /**
+     * Метод для вывода информации о трудозатратах пользователя за период N..M
+     * @param id - идентификатор пользователя
+     * @param date1 - дата, с которой начинается поиск
+     * @param date2 - дата, по которую идёт поиск
+     * @return - список найденных простоев
+     */
+    public LinkedList<WorkTime> view_work_time_for_user(Long id, Date date1, Date date2) {
+        LinkedList<WorkTime> responseList = new LinkedList<>();
+
+        for (Task task : task_list) {
+            if (task.getDate_start_task().after(date1) && task.getDate_start_task().before(date2)) {
+                responseList.add(new WorkTime(task.getTitle(), task.getTime()));
+            }
+        }
+        return responseList;
     }
 
 }
