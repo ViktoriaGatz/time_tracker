@@ -1,8 +1,8 @@
 package ru.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.example.entity.task.Task;
 import ru.example.entity.user.User;
@@ -16,6 +16,7 @@ import java.util.Optional;
 
 /**
  * Класс-контроллер с основными REST запросами
+ *
  * @author ViktoriaGatz
  * @version 1.0
  */
@@ -23,13 +24,19 @@ import java.util.Optional;
 @RequestMapping("/")
 public class Controller {
 
-    /** Поле для сервиса задач */
+    /**
+     * Поле для сервиса задач
+     */
     private TaskServiceImpl taskServiceImpl;
 
-    /** Поле для сервиса пользователей */
+    /**
+     * Поле для сервиса пользователей
+     */
     private UserServiceImpl userServiceImpl;
 
-    /** Конструктор - создание объекта Controller */
+    /**
+     * Конструктор - создание объекта Controller
+     */
     @Autowired
     public Controller(TaskServiceImpl taskServiceImpl, UserServiceImpl userServiceImpl) {
         this.taskServiceImpl = taskServiceImpl;
@@ -38,9 +45,10 @@ public class Controller {
 
     /**
      * Get метод для создания новой задачи для пользователя
+     *
      * @param user_id - идентификатор пользователя, для которого создаётся задача
-     * @param title - заголовок для задачи
-     * @param desc - описание задачи
+     * @param title   - заголовок для задачи
+     * @param desc    - описание задачи
      * @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON), либо Страница 404
      */
     @GetMapping("/add_task_simple/user_id={user_id}/title={title}/desc={desc}")
@@ -53,16 +61,19 @@ public class Controller {
 
     /**
      * Post метод для сохранения новой задачи
+     *
      * @param task - кандидат на сохранение (новая задача)
      * @return тело ответа - сохранённая задача (MediaType.APPLICATION_JSON)
      */
     @PostMapping("/saveTask")
     public ResponseEntity saveTask(@RequestBody Task task) {
-        return ResponseEntity.ok(taskServiceImpl.save(task));
+        taskServiceImpl.save(task);
+        return ResponseEntity.ok(task);
     }
 
     /**
      * Get метод поиска задачи по идентификатору
+     *
      * @param id - идентификатор искомой задачи
      * @return тело ответа - найденная задача в случае успеха (MediaType.APPLICATION_JSON), либо Страница 404
      */
@@ -77,6 +88,7 @@ public class Controller {
 
     /**
      * Get метод для отображения списка всех задач
+     *
      * @return тело ответа - список найденных задач
      */
     @GetMapping("/show_task")
@@ -86,6 +98,7 @@ public class Controller {
 
     /**
      * Get метод для запуска задачи
+     *
      * @param task_id - идентификатор задачи, которую нужно запустить
      * @return тело ответа - запущенная задача в случае успеха (MediaType.APPLICATION_JSON), либо Страница 404
      */
@@ -93,12 +106,13 @@ public class Controller {
     public ResponseEntity start_task(@PathVariable Long task_id) {
         Optional<Task> byId = taskServiceImpl.findById(task_id);
         return !byId.isPresent()
-            ? ResponseEntity.notFound().build()
-            : ResponseEntity.ok(taskServiceImpl.startTime(byId.get()));
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(taskServiceImpl.startTime(byId.get()));
     }
 
     /**
      * Get метод для остановки задачи
+     *
      * @param task_id - идентификатор задачи, которую нужно остановить
      * @return тело ответа - остановленная задача в случае успеха (MediaType.APPLICATION_JSON), либо Страница 404
      */
@@ -106,12 +120,13 @@ public class Controller {
     public ResponseEntity stop_task(@PathVariable Long task_id) {
         Optional<Task> byId = taskServiceImpl.findById(task_id);
         return !byId.isPresent()
-            ? ResponseEntity.notFound().build()
-            : ResponseEntity.ok(taskServiceImpl.stopTime(byId.get()));
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(taskServiceImpl.stopTime(byId.get()));
     }
 
     /**
      * Get метод для добавления пользователя треккера
+     *
      * @param fio - ФИО пользователя
      * @return тело ответа - добавленный пользователь (MediaType.APPLICATION_JSON)
      */
@@ -121,28 +136,32 @@ public class Controller {
     }
 
     /**
-     * Get метод для редактирования информации о пользоваетеле
-     * @param id - идентификатор пользователя, данные о котором будут изменены
-     * @param new_fio - новые ФИО
-     * @return тело ответа - изменённый пользователь или новый пользователь (MediaType.APPLICATION_JSON)
+     * Get метод для изменения данных пользователя треккера
+     *
+     * @param user_id - идентификатор пользователя
+     * @param fio - новые ФИО пользователя
+     * @return тело ответа - обновлённый пользователь (MediaType.APPLICATION_JSON)
      */
-    @GetMapping("/edit/id={id}/new_fio={new_fio}")
-    public ResponseEntity editUser(@PathVariable Long id, @PathVariable String new_fio) {
-        return ResponseEntity.ok(userServiceImpl.save(new User(id, new_fio)));
+    @GetMapping("/update/user_id={user_id}/fio={fio}")
+    public ResponseEntity updateUser(@PathVariable Long user_id, @PathVariable String fio) {
+        return ResponseEntity.ok(userServiceImpl.update(user_id, fio));
     }
 
     /**
      * Post метод для сохранения нового пользователя треккинга
+     *
      * @param user - кандидат на сохранение (новый пользователь)
      * @return тело ответа - сохранённый пользователь (MediaType.APPLICATION_JSON)
      */
     @PostMapping("/saveUser")
     public ResponseEntity saveUser(@RequestBody User user) {
-        return ResponseEntity.ok(userServiceImpl.save(user));
+        userServiceImpl.save(user);
+        return ResponseEntity.ok(user);
     }
 
     /**
      * Get метод для поиска пользователя по идентификатору
+     *
      * @param user_id - идентификатор искомого пользователя
      * @return тело ответа - найденный пользователь в случае успеха (MediaType.APPLICATION_JSON), либо Страница 404
      */
@@ -156,6 +175,7 @@ public class Controller {
 
     /**
      * Get метод для вывода всех пользователей треккинга
+     *
      * @return тело ответа - список пользователей (MediaType.APPLICATION_JSON)
      */
     @GetMapping("/show_user")
@@ -166,13 +186,16 @@ public class Controller {
     /**
      * Показать все трудозатраты пользователя за период N..M
      * Для ответа на вопрос, на какие задачи я потратил больше времени
+     *
      * @param user_id - идентификатор искомого пользователя
-     * @param date1 - дата с которой начинается поиск
-     * @param date2 - дата по которуюю идёт поиск
+     * @param date1   - дата с которой начинается поиск
+     * @param date2   - дата по которуюю идёт поиск
      * @return тело ответа - список задач (сортировка по времени поступления в треккер)
      */
     @GetMapping("/work_time_for_user/user_id={user_id}/from={date1}/to={date2}")
-    public ResponseEntity work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+    public ResponseEntity work_time_for_user(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Long user_id,
+                                             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
+                                             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
         dateFormat.format(new Date());
         return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
@@ -181,13 +204,16 @@ public class Controller {
     /**
      * Показать все трудозатраты пользователя за период N..M
      * Для ответа на вопрос, где за прошедшую неделю были 'дыры', когда я ничего не делал
+     *
      * @param user_id - идентификатор искомого пользователя
-     * @param date1 - дата с которой начинается поиск
-     * @param date2 - дата по которуюю идёт поиск
+     * @param date1   - дата с которой начинается поиск
+     * @param date2   - дата по которуюю идёт поиск
      * @return тело ответа - список задач (сортировка по времени поступления в треккер)
      */
     @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
-    public ResponseEntity not_work_time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+    public ResponseEntity not_work_time_for_user(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Long user_id,
+                                                 @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
+                                                 @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd hh:mm");
         dateFormat.format(new Date());
         return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
@@ -195,18 +221,22 @@ public class Controller {
 
     /**
      * Показать все трудозатраты пользователя за период N..M
+     *
      * @param user_id - идентификатор искомого пользователя
-     * @param date1 - дата с которой начинается поиск
-     * @param date2 - дата по которуюю идёт поиск
+     * @param date1   - дата с которой начинается поиск
+     * @param date2   - дата по которуюю идёт поиск
      * @return тело ответа - список задач (сортировка по времени поступления в треккер)
      */
-    @GetMapping("/no_work_time_for_user={user_id}/from={date1}/to={date2}")
-    public ResponseEntity time_for_user(@PathVariable Long user_id, @PathVariable Date date1, @PathVariable Date date2) {
+    @GetMapping("/view_time_for_user={user_id}/from={date1}/to={date2}")
+    public ResponseEntity<List<Task>> view_time_for_user(@PathVariable Long user_id,
+                                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
+                                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
         return ResponseEntity.ok(userServiceImpl.time_for_user(user_id, date1, date2));
     }
 
     /**
      * Get метод для удаления пользователя
+     *
      * @param user_id - идентификатор пользователя, которого нужно удалить
      * @return тело ответа - сообщение об удалении пользователя
      */
@@ -218,6 +248,7 @@ public class Controller {
 
     /**
      * Get метод для удаления задач у пользователя треккера
+     *
      * @param user_id - идентификатор пользователя
      * @return тело ответа - сообщение о том, что данные треккинга пользователя удалены
      */

@@ -1,10 +1,7 @@
 package ru.example.entity.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
 import ru.example.entity.user.User;
@@ -18,6 +15,7 @@ import java.util.Objects;
  * @author ViktoriaGatz
  * @version 1.0
  */
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,7 +33,7 @@ public class Task {
      * Поле для определения хозяина задачи
      */
     @JsonIgnoreProperties(value = "task_list", allowSetters = true)
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User masterUser;
 
@@ -174,14 +172,4 @@ public class Task {
         log.info("Task '" + getTitle() + "' stop in " + date_stop_task.toString() + " time = " + time.toString());
     }
 
-    /**
-     * Метод для вывода описания задачи
-     * @return - строка с описанием задачи
-     */
-    @Override
-    public String toString() {
-        return Objects.isNull(masterUser)
-                ? "title = " + title + " desc = " + description
-                : "masterUser_id = " + masterUser.getUser_id() + "title = " + title + " desc = " + description;
-    }
 }
