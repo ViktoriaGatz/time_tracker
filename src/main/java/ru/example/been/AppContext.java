@@ -62,7 +62,7 @@ public class AppContext {
             taskServiceImpl.delete_task_info_TIME_LIMIT(30000L);
             log.info("Delete data. The time is now " + new Date());
         } catch (NullPointerException npe) {
-            log.warn("Kek " + npe);
+            log.warn(npe);
         }
     }
     /*

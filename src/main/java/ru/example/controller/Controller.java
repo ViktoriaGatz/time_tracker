@@ -1,9 +1,11 @@
 package ru.example.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.example.been.AppContext;
 import ru.example.entity.task.Task;
 import ru.example.entity.user.User;
 import ru.example.service.TaskServiceImpl;
@@ -23,6 +25,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/")
 public class Controller {
+    /**
+     * Поля для логирования
+     */
+    private static final Logger log = Logger.getLogger(Controller.class.getName());
 
     /**
      * Поле для сервиса задач
@@ -54,6 +60,7 @@ public class Controller {
     @GetMapping("/add_task_simple/user_id={user_id}/title={title}/desc={desc}")
     public ResponseEntity add_task_simple(@PathVariable Long user_id, @PathVariable String title, @PathVariable String desc) {
         Optional<User> byId = userServiceImpl.findById(user_id);
+        log.info("call /add_task_simple/user_id=" + user_id + "/title=" + title + "/desc=" + desc);
         return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(taskServiceImpl.save(new Task(byId.get(), title, desc)));
@@ -68,18 +75,20 @@ public class Controller {
     @PostMapping("/saveTask")
     public ResponseEntity saveTask(@RequestBody Task task) {
         taskServiceImpl.save(task);
+        log.info("call /saveTask " + task.toString());
         return ResponseEntity.ok(task);
     }
 
     /**
      * Get метод поиска задачи по идентификатору
      *
-     * @param id - идентификатор искомой задачи
+     * @param task_id - идентификатор искомой задачи
      * @return тело ответа - найденная задача в случае успеха (MediaType.APPLICATION_JSON), либо Страница 404
      */
     @GetMapping("/task_id={task_id}")
-    public ResponseEntity findTaskById(@PathVariable Long id) {
-        Optional<Task> byId = taskServiceImpl.findById(id);
+    public ResponseEntity findTaskById(@PathVariable Long task_id) {
+        Optional<Task> byId = taskServiceImpl.findById(task_id);
+        log.info("call /task_id=" + task_id);
         return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(Optional.of(byId));
@@ -93,6 +102,7 @@ public class Controller {
      */
     @GetMapping("/show_task")
     public ResponseEntity findAllTask() {
+        log.info("call /show_task");
         return ResponseEntity.ok(taskServiceImpl.findAll());
     }
 
@@ -105,6 +115,7 @@ public class Controller {
     @GetMapping("/start_task/task_id={task_id}")
     public ResponseEntity start_task(@PathVariable Long task_id) {
         Optional<Task> byId = taskServiceImpl.findById(task_id);
+        log.info("call /start_task/task_id=" + task_id);
         return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(taskServiceImpl.startTime(byId.get()));
@@ -119,6 +130,7 @@ public class Controller {
     @GetMapping("/stop_task/task_id={task_id}")
     public ResponseEntity stop_task(@PathVariable Long task_id) {
         Optional<Task> byId = taskServiceImpl.findById(task_id);
+        log.info("call /stop_task/task_id" + task_id);
         return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(taskServiceImpl.stopTime(byId.get()));
@@ -132,6 +144,7 @@ public class Controller {
      */
     @GetMapping("/add/fio={fio}")
     public ResponseEntity addUser(@PathVariable String fio) {
+        log.info("call add/fio=" + fio);
         return ResponseEntity.ok(userServiceImpl.save(new User(fio)));
     }
 
@@ -144,6 +157,7 @@ public class Controller {
      */
     @GetMapping("/update/user_id={user_id}/fio={fio}")
     public ResponseEntity updateUser(@PathVariable Long user_id, @PathVariable String fio) {
+        log.info("call /update/user_id=" + user_id + "/fio=" + fio);
         return ResponseEntity.ok(userServiceImpl.update(user_id, fio));
     }
 
@@ -156,6 +170,7 @@ public class Controller {
     @PostMapping("/saveUser")
     public ResponseEntity saveUser(@RequestBody User user) {
         userServiceImpl.save(user);
+        log.info("call /saveUser " + user.toString());
         return ResponseEntity.ok(user);
     }
 
@@ -168,6 +183,7 @@ public class Controller {
     @GetMapping("/user_id={user_id}")
     public ResponseEntity findUserById(@PathVariable Long user_id) {
         Optional<User> byId = userServiceImpl.findById(user_id);
+        log.info("call /user_id=" + user_id);
         return !byId.isPresent()
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(Optional.of(byId));
@@ -180,6 +196,7 @@ public class Controller {
      */
     @GetMapping("/show_user")
     public ResponseEntity findAllUser() {
+        log.info("call /show_user");
         return ResponseEntity.ok(userServiceImpl.findAll());
     }
 
@@ -198,6 +215,7 @@ public class Controller {
                                              @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
         dateFormat.format(new Date());
+        log.info("call /work_time_for_user/user_id=" + user_id + "/from=" + date1 + "/to=" + date2);
         return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
     }
 
@@ -216,6 +234,7 @@ public class Controller {
                                                  @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd hh:mm");
         dateFormat.format(new Date());
+        log.info("call /no_work_time_for_user=" + user_id + "/from=" + date1 + "/to" + date2);
         return ResponseEntity.ok(userServiceImpl.view_work_time_for_user(user_id, date1, date2));
     }
 
@@ -231,6 +250,7 @@ public class Controller {
     public ResponseEntity<List<Task>> view_time_for_user(@PathVariable Long user_id,
                                                          @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
                                                          @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
+        log.info("call /view_time_for_user=" + user_id + "/from=" + date1 + "/to=" + date2);
         return ResponseEntity.ok(userServiceImpl.time_for_user(user_id, date1, date2));
     }
 
@@ -243,6 +263,7 @@ public class Controller {
     @GetMapping("/delete/user_id={user_id}")
     public ResponseEntity delete_user_by_id(@PathVariable Long user_id) {
         userServiceImpl.deleteById(user_id);
+        log.info("call /delete/user_id=" + user_id);
         return ResponseEntity.ok("User with id = " + user_id + " delete!");
     }
 
@@ -255,6 +276,7 @@ public class Controller {
     @GetMapping("/delete_info_for_user/user_id={user_id}")
     public ResponseEntity delete_info_for_user_by_id(@PathVariable Long user_id) {
         userServiceImpl.deleteInfoForUser(user_id);
+        log.info("call /delete_info_for_user/user_id=" + user_id);
         return ResponseEntity.ok("Task info about user with id = " + user_id + " delete!");
     }
 }
