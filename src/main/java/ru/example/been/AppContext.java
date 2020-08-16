@@ -56,7 +56,9 @@ public class AppContext {
      * Метод, выполняющийся каждые 30 секунд
      * Нужен для удаления старой информации о задачах
      */
-    @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
+//    @Scheduled(cron = "*/30 * * * * *") // каждые 30 секунд
+
+    @Scheduled(cron = "0 0 17 * * SUN")
     public void reportCurrentTime() {
         try {
             taskServiceImpl.delete_task_info_TIME_LIMIT(30000L);
