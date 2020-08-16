@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import ru.example.entity.WorkTime;
@@ -17,6 +18,7 @@ import java.util.*;
  * @author ViktoriaGatz
  * @version 1.0
  */
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
