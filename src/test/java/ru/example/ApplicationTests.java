@@ -172,15 +172,22 @@ class ApplicationTests {
 //        responseList.add(task2);
 //        user.setTask_list(requestList);
 //
-////        user.time_for_user(1L, new Date(86400000 * 2), new Date(86400000 * 4));
 //
-//        given(this.userService.findById(1L)).willReturn(java.util.Optional.of(user));
-//        given(this.userService.time_for_user(1L, new Date(86400000 * 2), new Date(86400000 * 4))).willReturn(responseList);
-//        this.mvc.perform(get("/view_time_for_user=1/from=1970-01-02/to=1970-01-04").accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk()).andExpect(content().
-//                string("[1]"));
+////        given(this.userService.findById(1L)).willReturn(java.util.Optional.of(user));
+//        when(this.userService.findById(1L)).thenReturn(java.util.Optional.of(user));
+//        when(this.userService.time_for_user(1L, new Date(86400000 * 2), new Date(86400000 * 4))).thenReturn(responseList);
+//        this.mvc.perform(get("/view_time_for_user=1/from=1970-01-02/to=1970-01-04"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//
+//        verify(this.userService).time_for_user(1L, new Date(86400000 * 2), new Date(86400000 * 4));
 //    }
+//
 
+    /**
+     * Тестирование POST метода по добавлению новой задачи
+     * @throws Exception - любые исключения
+     */
     @Test
     public void testSaveTaskPost() throws Exception {
         Task movie1 = new Task(null, 1L, "title", "description", null, null, null, null);
@@ -199,9 +206,13 @@ class ApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON));
-        verify(this.taskService).save(refEq(movie1));
+        verify(this.taskService).save(ArgumentMatchers.refEq(movie1));
     }
 
+    /**
+     * Тестирование POST метода по добавлению нового пользователя
+     * @throws Exception - любые исключения
+     */
     @Test
     public void testSaveUserPost() throws Exception {
         User movie1 = new User(1L, "fio");
@@ -215,7 +226,7 @@ class ApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON));
-        verify(this.userService).save(refEq(movie1));
+        verify(this.userService).save(ArgumentMatchers.refEq(movie1));
     }
 
     /**
