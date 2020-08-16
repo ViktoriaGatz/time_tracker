@@ -7,9 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.example.entity.task.Task;
 import ru.example.entity.user.User;
 import ru.example.repository.TaskRepository;
@@ -244,11 +247,23 @@ class ApplicationTests {
         user.setTask_list(list);
 
         given(this.userService.findById(1L)).willReturn(java.util.Optional.of(user));
-
         this.userService.time_for_user(1L, new Date(86400000 * 2), new Date(86400000 * 4));
-
         assertThat(this.userService.findById(1L).get().getTask_list()).isEqualTo(list);
 
+    }
+
+    /**
+     * Тестирование GET метода для добавления пользователя
+     * @throws Exception - любые исключения
+     */
+    @Test
+    public void testAddUserGet() throws Exception {
+        User movie1 = new User(null, "fio1");
+        when(userService.save(movie1)).thenReturn(movie1);
+        this.mvc
+                .perform(get("/add/fio=fio1"))
+                .andExpect(status().isOk());
+        verify(this.userService).save(ArgumentMatchers.refEq(movie1));
     }
 
 }
