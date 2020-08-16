@@ -23,6 +23,7 @@ import ru.example.service.UserServiceImpl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -195,7 +196,7 @@ class ApplicationTests {
     public void testSaveTaskPost() throws Exception {
         Task movie1 = new Task(null, 1L, "title", "description", null, null, null, null);
 
-        when(taskService.save(movie1)).thenReturn(movie1);
+        when(this.taskService.save(movie1)).thenReturn(movie1);
         this.mvc
                 .perform(post("/saveTask").contentType(MediaType.APPLICATION_JSON).content("{" +
                         " \"task_id\":1," +
@@ -219,7 +220,7 @@ class ApplicationTests {
     @Test
     public void testSaveUserPost() throws Exception {
         User movie1 = new User(1L, "fio");
-        when(userService.save(movie1)).thenReturn(movie1);
+        when(this.userService.save(movie1)).thenReturn(movie1);
         this.mvc
                 .perform(post("/saveUser").contentType(MediaType.APPLICATION_JSON).content("{" +
                         "\"user_id\":1," +
@@ -283,6 +284,17 @@ class ApplicationTests {
                         "\"task_list\":[]" +
                         "}"));
         verify(this.userService).update(1L, "fio2");
+    }
+
+    /**
+     * Тест по добавлению задачи несуществующему пользователю
+     * @throws Exception - любые исключения
+     */
+    @Test
+    public void testAddTaskGet() throws Exception {
+        this.mvc
+                .perform(get("/add_task_simple/user_id=1/title=title/desc=description"))
+                .andExpect(status().isNotFound());
     }
 
 }
