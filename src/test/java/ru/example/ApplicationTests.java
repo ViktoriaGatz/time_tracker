@@ -266,6 +266,25 @@ class ApplicationTests {
         verify(this.userService).save(ArgumentMatchers.refEq(movie1));
     }
 
+    /**
+     * Тест по обновлению пользователя
+     * @throws Exception - любые исключения
+     */
+    @Test
+    public void testUpdateUser() throws Exception {
+        User movie1 = new User(1L, "fio2");
+        when(userService.update(1L, "fio2")).thenReturn(movie1);
+        this.mvc
+                .perform(get("/update/user_id=1/fio=fio2"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{" +
+                        "\"user_id\":1," +
+                        "\"fio\":\"fio2\"," +
+                        "\"task_list\":[]" +
+                        "}"));
+        verify(this.userService).update(1L, "fio2");
+    }
+
 }
 
 // .andExpect(status().isOk()) - код возврата был 200?
